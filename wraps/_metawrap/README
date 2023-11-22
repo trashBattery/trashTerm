@@ -8,4 +8,4 @@ wrap parent directory - Name of the wrap is the directory name. conflicts will b
 core lua - This will share the same name as the parent directory. Must match. 
 README - standard readme. plaintext. Can say anything. Must be named README
 metasrc - resource folder for wrap-specific resources.
-    - Shared resources will use trashTerm/piles. piles are regulated by the trashTerm version and are used to save space.
+    - Shared resources will use trashTerm/macrosrc. macrosrc are regulated by the trashTerm version and are used to save space.
