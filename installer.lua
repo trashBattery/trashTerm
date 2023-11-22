@@ -24,5 +24,8 @@ if fs.exists("/startup.lua") then
 end
 fs.copy(workingDir.."/startup.lua", "/startup.lua")
 --Copy Dependencies to OS Directory
-fs.copy(workingDir, osDir)
+
+for _,filename in fs.list(workingDir)
+    fs.copy(filename,osDir..filename)
+end
 os.reboot()
