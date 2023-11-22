@@ -37,7 +37,7 @@ disk = peripheral.find("disk")
 printer = peripheral.find("printer")
     if (printer ~= nil) then print("Printer connected...") else print("No printer detected...") end
     sleep(turbo)
-tbCheck = os.loadAPI(osDir.."tbLibs")
+tbCheck = os.loadAPI(osDir.."metasrc/tbLibs")
     if (tbCheck) then print("tbLibs API loaded...") else print("Failed to mount tbLibs...") end
     sleep(turbo)
 term.clear()

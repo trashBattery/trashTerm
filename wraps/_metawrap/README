@@ -1,0 +1,11 @@
+This is an example wrap structure. 
+
+unWrapp utility will read wraps and expect the following formatting. 
+
+wrap parent directory - Name of the wrap is the directory name. conflicts will be dealt with via versioning suffixes
+    EXAMPLE: wimdy, wimdy_b1.0.2, wimdy_bifrostEidition
+    - unWrapp can rename wraps and will rename the core lua as well to match.
+core lua - This will share the same name as the parent directory. Must match. 
+README - standard readme. plaintext. Can say anything. Must be named README
+metasrc - resource folder for wrap-specific resources.
+    - Shared resources will use trashTerm/piles. piles are regulated by the trashTerm version and are used to save space.

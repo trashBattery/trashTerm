@@ -1,0 +1,6 @@
+trashHMI "Big Reactors" turbine regulator.
+trashBattery - 2020
+
+This software is designed to regulate an 1:N reactor:turbine configuration. 
+This HMI allows information readouts and control of up to 8 turbines on a network to
+ensure the systems are balanced for maximum effiency.

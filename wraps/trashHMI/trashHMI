@@ -1,0 +1,439 @@
+--FUNCTIONS
+
+
+-- ARRAY FUNCTIONS
+function getArraySize(t)
+    local count = 0
+    for _, __ in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+
+function printArray(t)
+	for k,v in pairs(t) do 
+		print(tostring(k)..":"..tostring(v)) 
+	end
+end
+
+function printSortedArray(t)
+	local tkeys = {}
+	for k in pairs(t) do 
+		table.insert(tkeys, k) 
+	end
+	table.sort(tkeys)
+	for _, k in ipairs(tkeys) do 
+		print(k, t[k])
+	end
+end
+
+--CLASSES
+function newTurbine(bigTurbine)
+	local turbine = {}
+	turbine.opbt = peripheral.wrap(bigTurbine) --Object Initializer
+	turbine.name = bigTurbine --Turbine Name
+	
+	--State
+	function turbine:updateState()
+		turbine.state = turbine.opbt.getActive()
+	end
+	--Fluids
+	function turbine:updateFluids()
+		turbine.inputAmount = turbine.opbt.getInputAmount()
+		turbine.outputAmount = turbine.opbt.getOutputAmount()
+		turbine.fluidFlowRate = turbine.opbt.getFluidFlowRate()
+		turbine.fluidFlowRateMax = turbine.opbt.getFluidFlowRateMax()
+	end
+	--Rotors
+	function turbine:updateRotor()
+		turbine.inductorEngaged = turbine.opbt.getInductorEngaged()
+		turbine.rotorSpeed = turbine.opbt.getRotorSpeed()
+	end
+	--Energy
+	function turbine:updateEnergy()
+		turbine.energyStored = turbine.opbt.getEnergyStored()
+		turbine.energyProducedLastTick = turbine.opbt.getEnergyProducedLastTick()
+	end
+	
+	function turbine:updateEverything()
+		turbine:updateState()
+		turbine:updateFluids()
+		turbine:updateRotor()
+		turbine:updateEnergy()
+	end
+	
+	--Functional Methods
+	function turbine:setFluidFlowRateMax(maxValue)
+		if(maxValue > 2000) then maxValue = 2000 end
+		if(maxValue < 0) then maxValue = 0 end
+		turbine.opbt.setFluidFlowRateMax(maxValue)
+	end
+	
+	return turbine
+end
+
+function newReactor(bigReactor)
+	local reactor = {}
+	reactor.opbr = peripheral.wrap(bigReactor) --Object Initializer
+	reactor.name = bigReactor --Reactor Name
+	
+	--State
+	function reactor:updateState()
+		reactor.state = reactor.opbr.getActive()
+	end
+	--Fuel
+	function reactor:updateFuel()
+		reactor.fuel = reactor.opbr.getFuelAmount()
+		reactor.fuelMax = reactor.opbr.getFuelAmountMax()
+		reactor.waste = reactor.opbr.getWasteAmount()
+		reactor.fuelConsumedLastTick = reactor.opbr.getFuelConsumedLastTick()
+	end
+	--Fluds
+	function reactor:updateFluids()
+		reactor.waterAmount = reactor.opbr.getCoolantAmount()
+		reactor.steamAmount = reactor.opbr.getHotFluidAmount()
+		reactor.energyProducedLastTick = reactor.opbr.getEnergyProducedLastTick()
+	end
+	--Temps
+	function reactor:updateTemps()
+		reactor.casingTemperature = reactor.opbr.getCasingTemperature()
+		reactor.fuelTemperature = reactor.opbr.getFuelTemperature()
+		reactor.reactivity = reactor.opbr.getFuelReactivity()
+	end
+	
+	function reactor:updateEverything()
+		reactor:updateState()
+		reactor:updateFuel()
+		reactor:updateFluids()
+		reactor:updateTemps()
+	end
+	
+	reactor:updateEverything()
+	
+	--Functional Methods
+	
+	return reactor
+end
+
+-- PERIPHERAL FUNCTIONS
+function getFirstPeripheralByType (pType)
+
+	if type(pType) ~= "string" then
+		error("Type must be string", 2)
+		return nil
+	end
+
+
+	for k,v in pairs(peripheral.getNames()) do
+		local vType = peripheral.getType(v)
+		if vType == tostring(pType) then
+			return v
+		end
+	end
+	
+	return nil
+end
+
+function getAllPeripheralsByType (pType)
+
+	if type(pType) ~= "string" then
+		error("Type must be string", 2)
+		return nil
+	end	
+	
+	results = {}
+	
+	for k,v in pairs(peripheral.getNames()) do
+		local vType = peripheral.getType(v)
+		if vType == tostring(pType) then
+			table.insert(results,v)
+		end
+	end
+	
+	return results
+end
+
+-- MATH FUNCTIONS
+function mathDelta(old, current)
+	return current-old
+end
+
+-- TERM.API EXTENDED TEXT FUNCTIONS
+function etfWrite(tm,text,fg,bg)
+	local bgStart = tm.getBackgroundColor()
+	local fgStart = tm.getTextColor()
+	if(bg ~= nil) then tm.setBackgroundColor(bg) end
+	if(fg ~= nil) then tm.setTextColor(fg) end
+	tm.write(text)
+	tm.setBackgroundColor(bgStart)
+	tm.setTextColor(fgStart)
+end
+
+function etfWriteXY(tm,x,y,text,fg,bg)
+	local bgStart = tm.getBackgroundColor()
+	local fgStart = tm.getTextColor()
+	if(bg ~= nil) then tm.setBackgroundColor(bg) end
+	if(fg ~= nil) then tm.setTextColor(fg) end
+	tm.setCursorPos(x,y)
+	tm.write(text)
+	tm.setBackgroundColor(bgStart)
+	tm.setTextColor(fgStart)
+end
+
+function etfCls(tm,bg)
+	if(bg ~= nil) then tm.setBackgroundColor(bg) end
+	tm.clear()
+	tm.setCursorPos(1,1)
+end
+
+-- PAINTUTILS.API EXTENDED PAINT FUNCTIONS
+function epfSquare(x1,y1,x2,y2,c)
+	local bgStart, cStart = term.getBackgroundColor()
+	local cX,cY = term.getCursorPos()
+	paintutils.drawBox(x1,y1,x2,y2,c)
+	term.setBackgroundColor(bgStart)
+	term.setCursorPos(cX,cY)
+end
+
+function epfFilledSquare(x1,y1,x2,y2,c)
+	local bgStart, cStart = term.getBackgroundColor()
+	local cX,cY = term.getCursorPos()
+	paintutils.drawFilledBox(x1,y1,x2,y2,c)
+	term.setBackgroundColor(bgStart)
+	term.setCursorPos(cX,cY)
+end
+
+function epfLine(x1,y1,x2,y2,c)
+	local bgStart, cStart = term.getBackgroundColor()
+	local cX,cY = term.getCursorPos()
+	paintutils.drawLine(x1,y1,x2,y2,c)
+	term.setBackgroundColor(bgStart)
+	term.setCursorPos(cX,cY)
+end
+
+function epfPercentageBarH(vPer,x1,y1,x2,y2,fg,bg) 
+	if(x1==x2) then error("x1/x2 cannot be the same | epfPercentageBarH(vPer,x1,y1,x2,y2,fg,bg)",2) end
+	if(vPer>1) then vPer=1 end
+	if(vPer<0) then vPer=0 end
+	local fGround,bGround = fg,bg
+	local xWidth = x2-x1
+	local yHeight = math.abs(y2-y1)
+	
+	if(vPer==0) then 
+		xDelt = 0;
+	else
+		if(xWidth>0) then
+			xDelt = math.floor((x2-x1)*vPer)
+		else
+			xDelt = math.ceil((x2-x1)*vPer)
+		end
+	end
+	
+	xNew = x1+xDelt
+	for i=0, yHeight,1 do
+		if(bg ~= nil) then epfLine(x1,y1+i,x2,y1+i,bGround) end
+		if(vPer>0) then epfLine(x1,y1+i,xNew,y1+i,fGround) end
+	end
+end
+
+function epfPercentageBarV(vPer,x1,y1,x2,y2,fg,bg)  
+	if(y1==y2) then error("y1/y2 cannot be the same | epfPercentageBarH(vPer,x1,y1,x2,y2,fg,bg)",2) end
+	if(vPer>1) then vPer=1 end
+	if(vPer<0) then vPer=0 end
+	local bGround,fGround = bg,fg
+	local xWidth = math.abs(x2-x1)
+	yHeight = y2-y1
+	
+	if(vPer==0) then 
+		yDelt = 0;
+	else
+		if(yHeight>=0) then
+			yDelt = math.floor((y2-y1)*vPer)
+		else
+			yDelt = math.ceil((y2-y1)*vPer)
+		end
+	end
+	
+	yNew = y1+yDelt
+	for i=0, xWidth,1 do
+		if(bg ~= nil) then epfLine(x1+i,y1,x1+i,y2,bGround) end
+		if(vPer>0) then epfLine(x1+i,y1,x1+i,yNew,fGround) end
+	end
+end
+
+--Reactor Control
+function reactorSetRods(reactor,depth)
+	reactor.setAllControlRodLevels(depth)
+end
+
+
+--END FUNCTIONS
+
+--VARIABLE SETUP
+local refreshRate = .1
+local lastRotSpeed = 0
+local passiveReactor = false
+--GLOBAL VARIABLE SETUP
+
+--BOOT CONFIG
+term.clear()
+term.setCursorPos(1,1)
+print("Trash Controller HMI")
+print("=======================")
+print("Mounting components...")
+print()
+
+
+local monitor = getFirstPeripheralByType("monitor")
+if monitor == nil then
+	term.blit("Unable to locate suitable monitor...","000000000000000000000000000000000000","eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+	--etfWrite(term,"> Unable to locate suitable monitor...",colors.white,colors.red)
+	print()
+	print("Aborting script...")
+	return 
+else
+	mon = peripheral.wrap(monitor)
+	term.redirect(mon)
+	mon.setBackgroundColor(colors.black)
+	mon.setTextColor(colors.white)
+	mon.clear()
+	mon.setCursorPos(1,1)
+	mon.setTextScale(.5)
+	termW,termH = mon.getSize()
+	print("> Connected display: "..monitor)	
+end
+
+local rctr = newReactor(getFirstPeripheralByType("BigReactors-Reactor"))
+if rctr == nil then
+	etfWrite(mon,"> Unable to locate suitable reactor...",colors.white,colors.red)
+	print()
+	--print("Aborting script...")
+	--return 
+else
+	print("> Connected reactor: "..rctr.name)
+end
+
+local turbine = getAllPeripheralsByType("BigReactors-Turbine")
+if turbine[1] == nil then
+	etfWrite(mon,"> Unable to locate suitable turbine...",colors.white,colors.red)
+	print()
+	print("Script will continue in passive-reactor mode.")
+	passiveReactor = true
+else
+	turb = {}
+	for k,tbine in pairs(turbine) do
+		turb[k] = newTurbine(tbine)
+		print("> Connected Turbine "..k..": "..turb[k].name)
+	end
+end
+--END BOOT CONFIG
+
+--UI Configs
+themeFont, theme1, theme2,bgStatus = colors.white, colors.cyan, colors.black, colors.black
+reactorTheme1,reactorTheme2,reactorTheme3 = colors.orange, colors.cyan, colors.black;
+bgStatusNew = bgStatus
+tModuleCol, tModuleRow = 4,2 --How many columns and rows to render
+tModuleMargin = 0; --Empy space around the modules in pixels.
+tModuleWidth,tModuleHeight = math.floor(termW/tModuleCol)-(tModuleMargin*(tModuleCol-1)),12 --Moduled width and heigh (borders included, but not margin)
+anchorX, anchorY = 2,termH-(tModuleHeight*tModuleRow)-1
+
+--Variable Initializer 
+local screenCheck = 0 --Fixes screen width errors on server reboot
+local tSpeed, tSpeedPercent, tSpeedTarget, tSpeedTolerance
+local rErrorDuration, rErrorTolerance, rRodDepth, rRodMin, rRodMax, rRodCurrent = 0,15,0,0,100,0
+local rErrorBlink = 0
+
+local loopcount = 0
+while true do
+	etfCls(mon)
+	if(loopcount>=100) then loopcount = 0 else loopcount = loopcount+1 end
+
+	--Anchor initializer; Required to render the first square properly each loop. 
+	
+--=========================================
+-- Render Reactor
+--=========================================
+	--Render Reactor UI
+	epfSquare(1,1,termW,termH,reactorTheme1)
+	etfWriteXY(mon,math.floor(termW/2)-10,1,"Trash Controller HMI",colors.white, colors.black)
+
+	alignY = 5 --Meter Y-anchor
+	
+	rctr:updateFuel()
+	rctr:updateTemps()
+	rctrFuelPerc = rctr.fuel/rctr.fuelMax
+	
+	etfWriteXY(mon,3,alignY,"Fuel")
+	epfPercentageBarH(rctrFuelPerc,8,alignY,termW-3,alignY,colors.yellow,colors.cyan)
+	alignY = alignY+1
+	
+	rctrHeatPerc = rctr.casingTemperature/1000
+	etfWriteXY(mon,3,alignY,"Case Heat")
+	epfPercentageBarH(rctrHeatPerc,13,alignY,termW-3,alignY,colors.orange,colors.gray)
+	alignY = alignY+1
+	
+	etfWriteXY(mon,3,alignY,"Steam Output: "..rctr.energyProducedLastTick.."mb/t")	
+--=========================================
+-- Render Turbine
+--=========================================
+	local tY = anchorY
+	local tModuleMargin = tModuleMargin*2
+	local moduleCount = 0
+	--Anchor initializer; Required to render the first square properly each loop. 
+	local tY = anchorY
+	local tModuleMargin = tModuleMargin*2
+	for row=0,tModuleRow-1 do
+		local tX = anchorX-tModuleWidth-tModuleMargin --Reset X Pos
+		for col=0, tModuleCol-1 do
+			--Easy Increment Module
+			moduleCount = moduleCount+1	
+			
+			
+			--API Calls
+			if(turb[moduleCount]) then
+				turb[moduleCount]:updateRotor()
+				tSpeed = turb[moduleCount].rotorSpeed 
+				turb[moduleCount]:updateFluids()
+			else 
+				tSpeed = -1 
+			end
+			
+			--Draw Module
+			tX = tX+tModuleWidth+tModuleMargin
+			tX2, tY2 = tX+tModuleWidth,tY+tModuleHeight
+			epfFilledSquare(tX,tY,tX2,tY2,bgStatusNew)
+			epfSquare(tX,tY,tX2,tY2,theme1)
+			
+			--Draw Module Variables if module detected
+			if (tSpeed ~= -1) then
+				etfWriteXY(mon,tX+1,tY,"Turbine:"..moduleCount, themeFont, theme2)
+				
+				tSpeed = math.floor(tSpeed+.5)
+				tSpeedPercent = tSpeed/2700
+				
+				epfPercentageBarV(tSpeedPercent,tX+2,tY2-2,tX+3,tY+2,colors.white,colors.orange)
+				etfWriteXY(mon,tX+5,tY+2,"RPM:"..tSpeed)
+				etfWriteXY(mon,tX+5,tY+3,"FR:"..turb[moduleCount].fluidFlowRate)
+				etfWriteXY(mon,tX+5,tY+4,"FRM:"..turb[moduleCount].fluidFlowRateMax)
+			
+			else 
+				etfWriteXY(mon,tX+1,tY,"DISCONNECTED"..moduleCount, themeFont, theme2)
+			end
+		end
+		tY = tY+tModuleHeight+tModuleMargin--Increment tY by row. 
+	end
+	
+--=========================================
+-- Auto-regluation Logic
+--=========================================
+
+	--Evenly distribute avaialble steam to all active turbines. 
+	if(loopcount%2==0) then 
+		rctr.updateFluids()
+		divisor = math.floor(rctr.energyProducedLastTick/#turb)+50
+		for k,_ in pairs(turb) do
+			if(turb[k]) then turb[k]:setFluidFlowRateMax(divisor) end
+		end
+	end	
+	sleep(refreshRate)
+end
