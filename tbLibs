@@ -1,0 +1,102 @@
+-- TERM.API EXTENDED TEXT FUNCTIONS
+function etfWrite(tm,text,fg,bg)
+	local bgStart = tm.getBackgroundColor()
+	local fgStart = tm.getTextColor()
+	if(bg ~= nil) then tm.setBackgroundColor(bg) end
+	if(fg ~= nil) then tm.setTextColor(fg) end
+	tm.write(text)
+	tm.setBackgroundColor(bgStart)
+	tm.setTextColor(fgStart)
+end
+
+function etfWriteXY(tm,x,y,text,fg,bg)
+	local bgStart = tm.getBackgroundColor()
+	local fgStart = tm.getTextColor()
+	if(bg ~= nil) then tm.setBackgroundColor(bg) end
+	if(fg ~= nil) then tm.setTextColor(fg) end
+	tm.setCursorPos(x,y)
+	tm.write(text)
+	tm.setBackgroundColor(bgStart)
+	tm.setTextColor(fgStart)
+end
+
+function etfCls(tm,bg)
+	if(bg ~= nil) then tm.setBackgroundColor(bg) end
+	tm.clear()
+	tm.setCursorPos(1,1)
+end
+
+-- PAINTUTILS.API EXTENDED PAINT FUNCTIONS
+function epfSquare(x1,y1,x2,y2,c)
+	local bgStart, cStart = term.getBackgroundColor()
+	local cX,cY = term.getCursorPos()
+	paintutils.drawBox(x1,y1,x2,y2,c)
+	term.setBackgroundColor(bgStart)
+	term.setCursorPos(cX,cY)
+end
+
+function epfFilledSquare(x1,y1,x2,y2,c)
+	local bgStart, cStart = term.getBackgroundColor()
+	local cX,cY = term.getCursorPos()
+	paintutils.drawFilledBox(x1,y1,x2,y2,c)
+	term.setBackgroundColor(bgStart)
+	term.setCursorPos(cX,cY)
+end
+
+function epfLine(x1,y1,x2,y2,c)
+	local bgStart, cStart = term.getBackgroundColor()
+	local cX,cY = term.getCursorPos()
+	paintutils.drawLine(x1,y1,x2,y2,c)
+	term.setBackgroundColor(bgStart)
+	term.setCursorPos(cX,cY)
+end
+
+function epfPercentageBarH(vPer,x1,y1,x2,y2,fg,bg) 
+	if(x1==x2) then error("x1/x2 cannot be the same | epfPercentageBarH(vPer,x1,y1,x2,y2,fg,bg)",2) end
+	if(vPer>1) then vPer=1 end
+	if(vPer<0) then vPer=0 end
+	local fGround,bGround = fg,bg
+	local xWidth = x2-x1
+	local yHeight = math.abs(y2-y1)
+	
+	if(vPer==0) then 
+		xDelt = 0;
+	else
+		if(xWidth>0) then
+			xDelt = math.floor((x2-x1)*vPer)
+		else
+			xDelt = math.ceil((x2-x1)*vPer)
+		end
+	end
+	
+	xNew = x1+xDelt
+	for i=0, yHeight,1 do
+		if(bg ~= nil) then epfLine(x1,y1+i,x2,y1+i,bGround) end
+		if(vPer>0) then epfLine(x1,y1+i,xNew,y1+i,fGround) end
+	end
+end
+
+function epfPercentageBarV(vPer,x1,y1,x2,y2,fg,bg)  
+	if(y1==y2) then error("y1/y2 cannot be the same | epfPercentageBarH(vPer,x1,y1,x2,y2,fg,bg)",2) end
+	if(vPer>1) then vPer=1 end
+	if(vPer<0) then vPer=0 end
+	local bGround,fGround = bg,fg
+	local xWidth = math.abs(x2-x1)
+	yHeight = y2-y1
+	
+	if(vPer==0) then 
+		yDelt = 0;
+	else
+		if(yHeight>=0) then
+			yDelt = math.floor((y2-y1)*vPer)
+		else
+			yDelt = math.ceil((y2-y1)*vPer)
+		end
+	end
+	
+	yNew = y1+yDelt
+	for i=0, xWidth,1 do
+		if(bg ~= nil) then epfLine(x1+i,y1,x1+i,y2,bGround) end
+		if(vPer>0) then epfLine(x1+i,y1,x1+i,yNew,fGround) end
+	end
+end
