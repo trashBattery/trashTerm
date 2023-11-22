@@ -17,5 +17,5 @@ print()
 print("Starting in 15 seconds.")
 print("Press CTRL+T to abort....")
 sleep(15)
-if fs.exist("/disk/trashTerm") then fs.delete("/disk/trashTerm") end 
+if fs.exists("/disk/trashTerm") then fs.delete("/disk/trashTerm") end 
 os.run({},workingDir.."/grd/github", "trashbattery", "trashTerm", "/disk/")
