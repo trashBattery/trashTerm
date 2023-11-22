@@ -1,6 +1,6 @@
 term.clear()
 term.setCursorPos(1,1)
-if NOT fs.exists("/boot/") then
+if not fs.exists("/disk/") then
     print("No drive attached or no disk in drive.")
     print("Please insert a disk into drive 0")
     print("run the utility again.")
@@ -15,4 +15,4 @@ print()
 print("Starting in 15 seconds.")
 print("Press CTRL+T to abort....")
 sleep(15)
-os.run({},"GRD/github", "trashbattery", "trashTerm", "/disk/")
+os.run({},"grd/github", "trashbattery", "trashTerm", "/disk/")
