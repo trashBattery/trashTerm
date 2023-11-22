@@ -22,8 +22,7 @@ if fs.exists("/startup.lua") then
     print("!!Renaming your existing startup.lua to startup.lua.tbOld")
     fs.move("/startup.lua","/startup.lua.tbOld") 
 end
-fs.copy(workingDir.."startup.lua", "/startup.lua")
+fs.copy(workingDir.."/startup.lua", "/startup.lua")
 --Copy Dependencies to OS Directory
-fs.copy(workingDir.."tbLibs", osDir.."tbLibs")
-fs.copy(workingDir.."update.lua",osDir.."update.lua")
+fs.copy(workingDir, osDir)
 os.reboot()
