@@ -25,7 +25,5 @@ end
 fs.copy(workingDir.."/startup.lua", "/startup.lua")
 --Copy Dependencies to OS Directory
 
-for _,filename in fs.list(workingDir)
-    fs.copy(filename,osDir..filename)
-end
+for _,filename in fs.list(workingDir) do fs.copy(filename,osDir..filename) end
 os.reboot()
