@@ -11,6 +11,7 @@ sleep(1)
 --Installer Files Blacklist
 local ignore={
     ["installer.lua"]=true;
+    ["startup.lua"]=true;
 }
 
 --Make OS Directory
