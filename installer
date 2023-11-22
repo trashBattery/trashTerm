@@ -10,7 +10,7 @@ sleep(1)
 
 --Installer Files Blacklist
 local ignore={
-    ["installer.lua"]=true;
+    ["installer"]=true;
     ["startup.lua"]=true;
 }
 
