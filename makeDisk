@@ -1,0 +1,18 @@
+term.clear()
+term.setCursorPos(1,1)
+if NOT fs.exists("/boot/") then
+    print("No drive attached or no disk in drive.")
+    print("Please insert a disk into drive 0")
+    print("run the utility again.")
+    return
+end
+
+print("This program will download the current")
+print("build of trashTerm to /disk/.")
+print("installer.lua can be used from that disk to update")
+print("or install the OS after completeion.")
+print()
+print("Starting in 15 seconds.")
+print("Press CTRL+T to abort....")
+sleep(15)
+os.run({},"GRD/github", "trashbattery", "trashTerm", "/disk/")

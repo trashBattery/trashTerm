@@ -1,7 +1,7 @@
 term.clear()
 term.setCursorPos(1,1)
 local turbo = .5
-local osDir = "/trashOS/"
+local osDir = "/trashTerm/"
 mon = peripheral.find("monitor")
     if (mon ~= nil) then 
         local oldTerm = term.redirect(mon)

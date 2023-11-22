@@ -8,7 +8,8 @@ print()
 print("Press CTRL+T to abort")
 sleep(1)
 --Make OS Directory
-local osDir = "/trashOS/"
+local osDir = "/trashTerm/"
+local workingDir = fs.getDir(shell.getRunningProgram())
 if fs.exists(osDir) then
     fs.delete(osDir)
 end
@@ -21,8 +22,8 @@ if fs.exists("/startup.lua") then
     print("!!Renaming your existing startup.lua to startup.lua.tbOld")
     fs.move("/startup.lua","/startup.lua.tbOld") 
 end
-fs.copy("/disk/startup.lua", "/startup.lua")
+fs.copy(workingDir.."startup.lua", "/startup.lua")
 --Copy Dependencies to OS Directory
-fs.copy("/disk/tbLibs", osDir.."tbLibs")
-fs.copy("/disk/update.lua",osDir.."update.lua")
+fs.copy(workingDir.."tbLibs", osDir.."tbLibs")
+fs.copy(workingDir.."update.lua",osDir.."update.lua")
 os.reboot()

@@ -1,1 +1,1 @@
-os.run({},"/trashOS/boot")
+os.run({},"/trashTerm/boot")
