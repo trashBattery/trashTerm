@@ -7,6 +7,12 @@ print("=====")
 print()
 print("Press CTRL+T to abort")
 sleep(1)
+
+--Installer Files Blacklist
+local ignore={
+    ["installer.lua"]=true;
+}
+
 --Make OS Directory
 local osDir = "/trashTerm/"
 local workingDir = fs.getDir(shell.getRunningProgram())
@@ -25,5 +31,9 @@ end
 fs.copy(workingDir.."/startup.lua", "/startup.lua")
 --Copy Dependencies to OS Directory
 
-for _,filename in fs.list(workingDir) do fs.copy(filename,osDir..filename) end
+for _,filename in ipairs(fs.list(workingDir)) do
+    if not ignore[filename] then
+        fs.copy(workingDir.."/"..filename,osDir..filename)
+    end
+end
 os.reboot()
